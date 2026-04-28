@@ -1,14 +1,18 @@
 # Python
+venv/
 __pycache__/
 *.pyc
-venv/
 
 # Java
-target/
-*.class
+build/
+.gradle/
 
 # OS
 .DS_Store
+Thumbs.db
 
 # Env
 .env
+
+# Data opcional
+*.csv
