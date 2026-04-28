@@ -1,31 +1,28 @@
-Predictive Monitoring System
+## Predictive Monitoring System
 Sistema de monitoreo predictivo basado en microservicios que integra un backend en Java Spring Boot con un servicio de Machine Learning en Python (FastAPI).
 
-Arquitectura
-Fragmento de código
-graph LR
+## Arquitectura
   A[Cliente/Postman] --> B[Spring Boot API]
   B --> C[FastAPI ML Service]
   C --> D[Random Forest Model]
   
-Tecnologías
+## Tecnologías
 Backend: Java 17+, Spring Boot
 ML Service: Python 3.10+, FastAPI, Uvicorn
 Data Science: Scikit-learn, Pandas, Numpy (Análisis estadístico)
 DevOps: Docker, Docker Compose, Git  - - En esta version aun no esta disponible esto
 
-Funcionalidad
+## Funcionalidad
 El sistema analiza métricas críticas (CPU, RAM, disco) y utiliza un modelo de Random Forest entrenado con datos balanceados (SMOTE) para predecir posibles fallos de infraestructura antes de que ocurran.
 
-Actualización: Motor de Inferencia con Memoria (V2)
+## Actualización: Motor de Inferencia con Memoria (V2)
 He evolucionado el servicio de Machine Learning de una predicción estática a un Motor de Inferencia de Estado (Stateful).
 
 Cambios Clave:
 Análisis Temporal Dinámico: Integración de numpy para calcular la media móvil (cpu_ma) y la desviación estándar (cpu_std) en tiempo real. El modelo ahora detecta "picos" de inestabilidad, no solo valores altos.
-
 Persistencia por Máquina: Implementación de un diccionario de estados que separa el historial de métricas por machine_id, permitiendo el monitoreo independiente de múltiples servidores.
 
-Dual Inference Mode:
+## Dual Inference Mode:
 
 POST /predict: Modo Real-time. Mantiene el historial de la máquina para detectar tendencias y anomalías acumulativas.
 
@@ -63,7 +60,7 @@ JSON
     { "cpu": 90, "ram": 85, "disk": 10, "machine_id": "m1", "timestamp": "..." }
   ]
 }
- Autor
+##  Autor
 Fernanda Bracho 
 
 ## ZERO TO HEROOOO 
