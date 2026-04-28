@@ -41,3 +41,8 @@ POST http://localhost:8080/api/predict
 ## Estado
 
 Versión 1: Sistema funcional con reglas básicas y ML inicial.
+
+## Autor
+Fernanda Bracho
+
+## ZERO TO HEROOOO
