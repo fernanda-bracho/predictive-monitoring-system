@@ -1,0 +1,16 @@
+Predicción Individual (/predict)
+Este es el Modo de Monitoreo en Tiempo Real. Funciona como un "centinela" que nunca olvida.
+
+Cómo funciona a detalle:
+Persistencia de Estado: Utiliza el diccionario global state. Cada vez que llega un dato, el sistema busca el machine_id. Si ya existía, recupera su "memoria" (qué CPU tenía hace un segundo).
+
+Cálculo de Inercia: Al tener memoria, el modelo puede calcular el cpu_diff y el cpu_std a lo largo del tiempo.
+
+Ejemplo: Si una máquina ha estado al 10% de CPU por una hora y de pronto sube a 40%, el modelo detectará una anomalía, no por el 40% (que es bajo), sino por el salto brusco respecto a su historia.
+
+Ventana Deslizable: Solo guarda los últimos 5 eventos para no saturar la RAM, pero es suficiente para detectar tendencias.
+
+Casos de Uso:
+Agentes Locales: Un script pequeño instalado en un servidor que envía sus métricas cada segundo.
+
+Alertas Críticas: Disparar un mensaje de Slack o un correo en el momento exacto en que el modelo detecta que el comportamiento se volvió errático.
