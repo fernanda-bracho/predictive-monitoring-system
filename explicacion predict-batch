@@ -1,0 +1,18 @@
+Predicción en Lote (/predict-batch)
+Este es el Modo de Análisis Masivo o Forense. Funciona como una "fotografía" de un momento dado.
+
+Cómo funciona a detalle:
+Aislamiento (Isolation): Al ejecutar state.clear() al inicio, el sistema garantiza que los fantasmas de pruebas pasadas no afecten los resultados actuales.
+
+Procesamiento Secuencial Interno: Aunque el usuario lo ve como una sola respuesta, el servidor procesa la lista en un bucle for.
+
+Ojo: Si dentro del mismo Batch mandas 3 filas de la misma máquina, la fila 2 sí usará la fila 1 como referencia. Pero si mandas 100 máquinas diferentes, cada una empieza de cero.
+
+Eficiencia de Red: Es mucho más rápido procesar un JSON con 100 filas que hacer 100 peticiones HTTP individuales (donde cada una tiene que abrir y cerrar una conexión).
+
+Casos de Uso:
+Análisis Histórico: Si el sistema estuvo desconectado y el agente guardó los datos localmente, al reconectarse envía todo el "paquete" de las últimas horas.
+
+Dashboard Global: Una vista general que analiza el estado de 50 servidores al mismo tiempo para dar un reporte de "Salud de la Infraestructura".
+
+Pruebas de Estrés: Cargar un dataset completo para validar qué tan bien está prediciendo el modelo sin tener que esperar a que los eventos ocurran en tiempo real.
