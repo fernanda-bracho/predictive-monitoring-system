@@ -1,4 +1,5 @@
 package com.predictivo.mlsistema;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import java.util.Map;
@@ -8,7 +9,9 @@ import java.util.Map;
 
 
 public class PredictionController {
-    private final String ML_URL = "http://127.0.0.1:8000/predict";
+
+    @Value("${ml.service.url:http://127.0.0.1:8000/predict}")
+    private String ML_URL;
 
     @PostMapping("/predict")
     public Map<String, Object> predict(@RequestBody Map<String, Object> request) {
