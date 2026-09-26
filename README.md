@@ -1,48 +1,77 @@
-## Predictive Monitoring System
-Sistema de monitoreo predictivo basado en microservicios que integra un backend en Java Spring Boot con un servicio de Machine Learning en Python (FastAPI).
+# Predictive Monitoring System
 
-## Arquitectura
-  A[Cliente/Postman] --> B[Spring Boot API]
-  B --> C[FastAPI ML Service]
-  C --> D[Random Forest Model]
-  
-## Tecnologías
-Backend: Java 17+, Spring Boot
-ML Service: Python 3.10+, FastAPI, Uvicorn
-Data Science: Scikit-learn, Pandas, Numpy (Análisis estadístico)
-DevOps: Docker, Docker Compose, Git  - - En esta version aun no esta disponible esto
+A microservices-based predictive monitoring platform that integrates a Java Spring Boot backend with a Python (FastAPI) machine learning service to detect infrastructure anomalies before they cause failures.
 
-## Funcionalidad
-El sistema analiza métricas críticas (CPU, RAM, disco) y utiliza un modelo de Random Forest entrenado con datos balanceados (SMOTE) para predecir posibles fallos de infraestructura antes de que ocurran.
+## Architecture
 
-## Actualización: Motor de Inferencia con Memoria (V2)
-He evolucionado el servicio de Machine Learning de una predicción estática a un Motor de Inferencia de Estado (Stateful).
+```mermaid
+graph LR
+    A[Client / Postman] --> B[Spring Boot API]
+    B --> C[FastAPI ML Service]
+    C --> D[Random Forest Model]
+```
 
-Cambios Clave:
-Análisis Temporal Dinámico: Integración de numpy para calcular la media móvil (cpu_ma) y la desviación estándar (cpu_std) en tiempo real. El modelo ahora detecta "picos" de inestabilidad, no solo valores altos.
-Persistencia por Máquina: Implementación de un diccionario de estados que separa el historial de métricas por machine_id, permitiendo el monitoreo independiente de múltiples servidores.
+## Tech Stack
 
-## Dual Inference Mode:
+- **Backend:** Java 17+, Spring Boot
+- **ML Service:** Python 3.10+, FastAPI, Uvicorn
+- **Data Science:** Scikit-learn, Pandas, NumPy (statistical analysis), imbalanced-learn (SMOTE)
+- **DevOps:** Docker, Docker Compose, Git
 
-POST /predict: Modo Real-time. Mantiene el historial de la máquina para detectar tendencias y anomalías acumulativas.
+## How It Works
 
-POST /predict-batch: Modo Forense/Histórico. Procesa lotes de datos de forma aislada (Stateless) para análisis masivo de logs sin contaminar la memoria del monitoreo en vivo.
+The system analyzes critical infrastructure metrics (CPU, RAM, disk) and uses a Random Forest model — trained on SMOTE-balanced data — to predict potential infrastructure failures before they occur.
 
-Cómo correr el proyecto
-1. ML Service (Python)
-Bash
+### Stateful Inference Engine (V2)
+
+The ML service evolved from static predictions to a **stateful inference engine**:
+
+- **Dynamic temporal analysis:** uses NumPy to calculate a rolling mean (`cpu_ma`) and standard deviation (`cpu_std`) in real time. The model detects instability *spikes*, not just high absolute values.
+- **Per-machine persistence:** an in-memory state dictionary keeps metric history separated by `machine_id`, enabling independent monitoring of multiple servers at once.
+
+### Dual Inference Mode
+
+| Endpoint | Mode | Behavior |
+|---|---|---|
+| `POST /predict` | Real-time | Keeps machine history to detect trends and cumulative anomalies |
+| `POST /predict-batch` | Forensic / historical | Processes batches in isolation (stateless), for bulk log analysis without affecting live monitoring memory |
+
+## Running the Project
+
+### Option A — Docker (recommended)
+
+From the project root:
+
+```bash
+docker compose up --build
+```
+
+This builds and starts both services together:
+- ML service (FastAPI) → `http://localhost:8000`
+- Java service (Spring Boot) → `http://localhost:8080`
+
+### Option B — Running services manually
+
+**1. ML Service (Python)**
+```bash
 cd ml_service
 pip install -r requirements.txt
 uvicorn app.main:app --reload
-2. Backend (Java)
-Bash
+```
+
+**2. Backend (Java)**
+```bash
 cd java-service
 ./gradlew bootRun
-3. Pruebas (Postman)
-Predicción Simple:
-POST http://localhost:8000/predict
+```
 
-JSON
+## Testing with Postman
+
+**Through the Java API (full end-to-end flow):**
+```
+POST http://localhost:8080/api/predict
+```
+```json
 {
   "timestamp": "2026-04-28 01:00:00",
   "cpu": 95.5,
@@ -50,17 +79,36 @@ JSON
   "disk": 30.0,
   "machine_id": "server_alpha"
 }
-Predicción en Batch:
-POST http://localhost:8000/predict-batch
+```
 
-JSON
+**Directly against the ML service (single prediction):**
+```
+POST http://localhost:8000/predict
+```
+```json
+{
+  "timestamp": "2026-04-28 01:00:00",
+  "cpu": 95.5,
+  "ram": 80.2,
+  "disk": 30.0,
+  "machine_id": "server_alpha"
+}
+```
+
+**Batch / forensic prediction:**
+```
+POST http://localhost:8000/predict-batch
+```
+```json
 {
   "observations": [
     { "cpu": 10, "ram": 20, "disk": 10, "machine_id": "m1", "timestamp": "..." },
     { "cpu": 90, "ram": 85, "disk": 10, "machine_id": "m1", "timestamp": "..." }
   ]
 }
-##  Autor
-Fernanda Bracho 
+```
 
-## ZERO TO HEROOOO 
+## Author
+
+**Fernanda Bracho**
+[GitHub](https://github.com/fernanda-bracho) · [LinkedIn](https://www.linkedin.com/in/fernanda-bracho-güitron-1b9731323)
