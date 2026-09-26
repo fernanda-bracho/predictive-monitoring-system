@@ -111,4 +111,5 @@ POST http://localhost:8000/predict-batch
 ## Author
 
 **Fernanda Bracho**
+**Zero to hero**
 [GitHub](https://github.com/fernanda-bracho) · [LinkedIn](https://www.linkedin.com/in/fernanda-bracho-güitron-1b9731323)
